@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/oakmound/oak/v4"
 	"parking-concurrency/scenes"
+
+	"github.com/oakmound/oak/v4"
 )
 
 func main() {
@@ -10,5 +11,9 @@ func main() {
 
 	parkingScene.Start()
 
-	_ = oak.Init("mainScene")
+	_ = oak.Init("mainScene", func(c oak.Config) (oak.Config, error) {
+		c.Screen.Width = 1000
+		c.Screen.Height = 200
+		return c, nil
+	})
 }

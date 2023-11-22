@@ -1,11 +1,12 @@
 package models
 
 import (
-	"github.com/oakmound/oak/v4/render"
-	"github.com/oakmound/oak/v4/render/mod"
 	"parking-concurrency/utils"
 	"sync"
 	"time"
+
+	"github.com/oakmound/oak/v4/render"
+	"github.com/oakmound/oak/v4/render/mod"
 
 	"github.com/oakmound/oak/v4/alg/floatgeom"
 	"github.com/oakmound/oak/v4/entities"
@@ -24,7 +25,7 @@ type Car struct {
 }
 
 func NewCar(ctx *scene.Context) *Car {
-	area := floatgeom.NewRect2(445, -20, 465, 0)
+	area := floatgeom.NewRect2(-40, 150, -20, 180)
 
 	assetPath := "assets/car.png"
 
@@ -92,30 +93,31 @@ func (c *Car) isCollision(direction string, cars []*Car) bool {
 }
 
 func (c *Car) Enqueue(manager *Manager) {
-	for c.Y() < 145 {
-		if !c.isCollision("down", manager.GetCars()) {
-			c.ShiftY(1)
-			c.entity.Renderable.(*render.Switch).Set("down")
+	for c.X() < 20 {
+		if !c.isCollision("right", manager.GetCars()) {
+			c.ShiftX(1)
+			c.entity.Renderable.(*render.Switch).Set("right")
 			time.Sleep(velocity * time.Millisecond)
 		}
 	}
 }
 
 func (c *Car) JoinDoor(manager *Manager) {
-	for c.Y() < entrySpot {
-		if !c.isCollision("down", manager.GetCars()) {
-			c.ShiftY(1)
-			c.entity.Renderable.(*render.Switch).Set("down")
+	for c.X() < 50 {
+		if !c.isCollision("right", manager.GetCars()) {
+			c.ShiftX(1)
+			c.entity.Renderable.(*render.Switch).Set("right")
 			time.Sleep(velocity * time.Millisecond)
 		}
 	}
 }
 
 func (c *Car) ExitDoor(manager *Manager) {
-	for c.Y() > 145 {
-		if !c.isCollision("up", manager.GetCars()) {
-			c.ShiftY(-1)
-			c.entity.Renderable.(*render.Switch).Set("up")
+	time.Sleep(time.Millisecond * 100)
+	for c.X() > 80 {
+		if !c.isCollision("left", manager.GetCars()) {
+			c.ShiftX(-1)
+			c.entity.Renderable.(*render.Switch).Set("left")
 			time.Sleep(velocity * time.Millisecond)
 		}
 	}
@@ -205,10 +207,10 @@ func (c *Car) Leave(spot *Spot, manager *Manager) {
 
 func (c *Car) LeaveSpot(manager *Manager) {
 	spotX := c.X()
-	for c.X() > spotX-30 {
-		if !c.isCollision("left", manager.GetCars()) {
-			c.ShiftX(-1)
-			c.entity.Renderable.(*render.Switch).Set("left")
+	for c.X() < spotX+30 {
+		if !c.isCollision("right", manager.GetCars()) {
+			c.ShiftX(1)
+			c.entity.Renderable.(*render.Switch).Set("right")
 			time.Sleep(velocity * time.Millisecond)
 		}
 		time.Sleep(20 * time.Millisecond)
@@ -216,10 +218,10 @@ func (c *Car) LeaveSpot(manager *Manager) {
 }
 
 func (c *Car) GoAway(manager *Manager) {
-	for c.Y() > -20 {
-		if !c.isCollision("up", manager.GetCars()) {
-			c.ShiftY(-1)
-			c.entity.Renderable.(*render.Switch).Set("up")
+	for c.X() > -20 {
+		if !c.isCollision("left", manager.GetCars()) {
+			c.ShiftX(-1)
+			c.entity.Renderable.(*render.Switch).Set("left")
 			time.Sleep(velocity * time.Millisecond)
 		}
 	}
@@ -237,6 +239,7 @@ func (c *Car) Run(manager *Manager, parking *Parking, doorM *sync.Mutex) {
 
 	c.Park(spotAvailable, manager)
 	time.Sleep(time.Millisecond * time.Duration(utils.RandomInt(40000, 50000)))
+	// time.Sleep(time.Millisecond * time.Duration(1000))
 
 	c.LeaveSpot(manager)
 	parking.ReleaseParkingSpot(spotAvailable)

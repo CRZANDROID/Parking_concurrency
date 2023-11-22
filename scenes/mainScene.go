@@ -4,38 +4,48 @@ import (
 	"sync"
 	"time"
 
+	"image/color"
+	"parking-concurrency/models"
+	"parking-concurrency/utils"
+
 	"github.com/oakmound/oak/v4"
 	"github.com/oakmound/oak/v4/alg/floatgeom"
 	"github.com/oakmound/oak/v4/entities"
 	"github.com/oakmound/oak/v4/event"
 	"github.com/oakmound/oak/v4/scene"
-	"image/color"
-	"parking-concurrency/models"
-	"parking-concurrency/utils"
 )
 
 var (
 	spots = []*models.Spot{
-		models.NewSpot(410, 210, 440, 240, 1, 1),
-		models.NewSpot(410, 255, 440, 285, 1, 2),
-		models.NewSpot(410, 300, 440, 330, 1, 3),
-		models.NewSpot(410, 345, 440, 375, 1, 4),
-		models.NewSpot(320, 210, 350, 240, 2, 5),
-		models.NewSpot(320, 255, 350, 285, 2, 6),
-		models.NewSpot(320, 300, 350, 330, 2, 7),
-		models.NewSpot(320, 345, 350, 375, 2, 8),
-		models.NewSpot(230, 210, 260, 240, 3, 9),
-		models.NewSpot(230, 255, 260, 285, 3, 10),
-		models.NewSpot(230, 300, 260, 330, 3, 11),
-		models.NewSpot(230, 345, 260, 375, 3, 12),
-		models.NewSpot(140, 210, 170, 240, 4, 13),
-		models.NewSpot(140, 255, 170, 285, 4, 14),
-		models.NewSpot(140, 300, 170, 330, 4, 15),
-		models.NewSpot(140, 345, 170, 375, 4, 16),
-		models.NewSpot(50, 210, 80, 240, 5, 17),
-		models.NewSpot(50, 255, 80, 285, 5, 18),
-		models.NewSpot(50, 300, 80, 330, 5, 19),
-		models.NewSpot(50, 345, 80, 375, 5, 20),
+		models.NewSpot(110, 80, 140, 110, 1, 2),
+		models.NewSpot(110, 120, 140, 150, 1, 1),
+
+		models.NewSpot(210, 80, 240, 110, 2, 3),
+		models.NewSpot(210, 120, 240, 150, 2, 4),
+
+		models.NewSpot(300, 80, 330, 110, 3, 5),
+		models.NewSpot(300, 120, 330, 150, 3, 2),
+
+		models.NewSpot(390, 80, 420, 110, 4, 2),
+		models.NewSpot(390, 120, 420, 150, 4, 2),
+
+		models.NewSpot(480, 80, 510, 110, 5, 2),
+		models.NewSpot(480, 120, 510, 150, 5, 2),
+
+		models.NewSpot(570, 80, 600, 110, 6, 2),
+		models.NewSpot(570, 120, 600, 150, 6, 2),
+
+		models.NewSpot(660, 80, 690, 110, 7, 2),
+		models.NewSpot(660, 120, 690, 150, 7, 2),
+
+		models.NewSpot(750, 80, 780, 110, 8, 2),
+		models.NewSpot(750, 120, 780, 150, 8, 2),
+
+		models.NewSpot(840, 80, 870, 110, 9, 2),
+		models.NewSpot(840, 120, 870, 150, 9, 2),
+
+		models.NewSpot(930, 80, 960, 110, 10, 2),
+		models.NewSpot(930, 120, 960, 150, 10, 2),
 	}
 	parking = models.NewParking(spots)
 	doorM   sync.Mutex
@@ -63,32 +73,28 @@ func (ps *MainScene) Start() {
 
 				band = false
 
-				for i := 0; i < 100; i++ {
+				for {
 					go func() {
 						car := models.NewCar(ctx)
 						car.Run(manager, parking, &doorM)
 					}()
 					time.Sleep(time.Millisecond * time.Duration(utils.RandomInt(1000, 2000)))
 				}
-
-				return 0
 			})
 		},
 	})
 }
 
 func prepare(ctx *scene.Context) {
-	// background brown color
+	entities.New(ctx, entities.WithRect(floatgeom.NewRect2(0, 0, 1000, 1000)), entities.WithColor(color.RGBA{R: 0, G: 128, B: 0, A: 255}), entities.WithDrawLayers([]int{0}))
 
-	entities.New(ctx, entities.WithRect(floatgeom.NewRect2(0, 0, 800, 500)), entities.WithColor(color.RGBA{R: 139, G: 69, B: 19, A: 255}), entities.WithDrawLayers([]int{0}))
-
-	parkingArea := floatgeom.NewRect2(20, 180, 500, 405)
+	parkingArea := floatgeom.NewRect2(50, 40, 990, 180)
 	entities.New(ctx, entities.WithRect(parkingArea), entities.WithColor(color.RGBA{R: 86, G: 101, B: 115, A: 255}), entities.WithDrawLayers([]int{0}))
 
-	parkingDoor := floatgeom.NewRect2(440, 170, 500, 180)
+	parkingDoor := floatgeom.NewRect2(45, 110, 50, 180)
 	entities.New(ctx, entities.WithRect(parkingDoor), entities.WithColor(color.RGBA{R: 255, G: 255, B: 255, A: 255}), entities.WithDrawLayers([]int{0}))
 
 	for _, spot := range spots {
-		entities.New(ctx, entities.WithRect(*spot.GetArea()), entities.WithColor(color.RGBA{R: 212, G: 172, B: 13, A: 255}), entities.WithDrawLayers([]int{1}))
+		entities.New(ctx, entities.WithRect(*spot.GetArea()), entities.WithColor(color.RGBA{R: 139, G: 128, B: 0, A: 255}), entities.WithDrawLayers([]int{1}))
 	}
 }

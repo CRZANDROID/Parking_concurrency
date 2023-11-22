@@ -52,23 +52,38 @@ func directionForParking(x, y float64, row int) *[]SpotDirection {
 	var directions []SpotDirection
 
 	if row == 1 {
-		directions = append(directions, *newSpotDirection("left", 445))
+		directions = append(directions, *newSpotDirection("right", 90))
 	}
 	if row == 2 {
-		directions = append(directions, *newSpotDirection("left", 355))
+		directions = append(directions, *newSpotDirection("right", 190))
 	}
 	if row == 3 {
-		directions = append(directions, *newSpotDirection("left", 265))
+		directions = append(directions, *newSpotDirection("right", 280))
 	}
 	if row == 4 {
-		directions = append(directions, *newSpotDirection("left", 175))
+		directions = append(directions, *newSpotDirection("right", 370))
 	}
 	if row == 5 {
-		directions = append(directions, *newSpotDirection("left", 85))
+		directions = append(directions, *newSpotDirection("right", 460))
+	}
+	if row == 6 {
+		directions = append(directions, *newSpotDirection("right", 550))
+	}
+	if row == 7 {
+		directions = append(directions, *newSpotDirection("right", 640))
+	}
+	if row == 8 {
+		directions = append(directions, *newSpotDirection("right", 730))
+	}
+	if row == 9 {
+		directions = append(directions, *newSpotDirection("right", 820))
+	}
+	if row == 10 {
+		directions = append(directions, *newSpotDirection("right", 910))
 	}
 
-	directions = append(directions, *newSpotDirection("down", y+5))
-	directions = append(directions, *newSpotDirection("left", x+5))
+	directions = append(directions, *newSpotDirection("up", y+4))
+	directions = append(directions, *newSpotDirection("right", x+2))
 
 	return &directions
 }
@@ -76,9 +91,9 @@ func directionForParking(x, y float64, row int) *[]SpotDirection {
 func directionsForLeaving() *[]SpotDirection {
 	var directions []SpotDirection
 
-	directions = append(directions, *newSpotDirection("down", 380))
-	directions = append(directions, *newSpotDirection("right", 475))
-	directions = append(directions, *newSpotDirection("up", 185))
+	directions = append(directions, *newSpotDirection("up", 40))
+	directions = append(directions, *newSpotDirection("left", 50))
+	directions = append(directions, *newSpotDirection("down", 120))
 
 	return &directions
 }
